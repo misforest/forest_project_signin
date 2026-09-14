@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>林業保育署執行成果 · 即時同步</title>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
 
@@ -1258,7 +1258,7 @@ async function handleGateSubmit(e){
     setGateMessage('請輸入正確的 Email 格式。', 'err');
     return;
   }
-  const captchaResponse = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse() : '';
+  const captchaResponse = (typeof grecaptcha !== 'undefined' && grecaptcha.enterprise) ? grecaptcha.enterprise.getResponse() : '';
   if(!captchaResponse){
     setGateMessage('請先勾選「我不是機器人」驗證後再送出。', 'err');
     return;
@@ -1272,11 +1272,11 @@ async function handleGateSubmit(e){
       return;
     }
     setGateMessage('尚未通過審核。請確認已在上方表單送出申請，並等待管理者核准後再查詢一次。', '');
-    if(typeof grecaptcha !== 'undefined') grecaptcha.reset();
+    if(typeof grecaptcha !== 'undefined' && grecaptcha.enterprise) grecaptcha.enterprise.reset();
   }catch(err){
     console.error(err);
     setGateMessage('查詢核准名單時發生錯誤，請稍後再試。', 'err');
-    if(typeof grecaptcha !== 'undefined') grecaptcha.reset();
+    if(typeof grecaptcha !== 'undefined' && grecaptcha.enterprise) grecaptcha.enterprise.reset();
   }finally{
     gateSubmitBtn.disabled = false;
   }
