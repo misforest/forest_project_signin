@@ -710,6 +710,8 @@ const FETCH_TIMEOUT_MS = 12000;
 const APPROVED_GID = '693022370';
 // 申請表單：https://docs.google.com/forms/d/e/1FAIpQLSdaAH0YV8rforuZ1-BeYFv40FZD0NoeS96DIz_qpvLPH0E1EQ/viewform
 // 表單回覆會自動寫入「email申請」分頁（gid=2055731417），管理者審核後請至「已核准名單」分頁填入 Y
+// 「登入紀錄」分頁（gid=496797845）由 Apps Script 網頁應用程式負責寫入
+const LOGIN_LOG_URL = 'https://script.google.com/macros/s/AKfycbzDv7zDHOPruO9_qRWbv6CtdKlHF2fdF_rflNZG9mOedpVg3tSdWn8r9_l9I44zxgdH/exec';
 
 const ACCENT_MAP = {
   '保育管理組': 'var(--matsuba)',
@@ -1228,6 +1230,19 @@ function setGateMessage(text, type){
   gateMsg.className = 'gate-msg' + (type ? ' ' + type : '');
 }
 
+/* 以 no-cors 方式將登入紀錄送至 Apps Script 網頁應用程式（無法讀取回應內容，僅確保送出） */
+function logLoginAttempt(email, status){
+  const body = new URLSearchParams();
+  body.append('account', email);
+  body.append('status', status);
+  return fetch(LOGIN_LOG_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body.toString()
+  }).catch(() => {});
+}
+
 /* 讀取「已核准名單」分頁：需同時符合 Email 相符，且「核准」欄位為 Y 才算通過 */
 async function fetchApprovedEmails(){
   const response = await loadSheetWithDiagnostics(APPROVED_GID);
@@ -1268,9 +1283,11 @@ async function handleGateSubmit(e){
   try{
     const approved = await fetchApprovedEmails();
     if(approved.has(email.toLowerCase())){
+      logLoginAttempt(email, 'OK');
       grantAccess();
       return;
     }
+    logLoginAttempt(email, 'FAIL');
     setGateMessage('尚未通過審核。請確認已在上方表單送出申請，並等待管理者核准後再查詢一次。', '');
     if(typeof grecaptcha !== 'undefined' && grecaptcha.enterprise) grecaptcha.enterprise.reset();
   }catch(err){
