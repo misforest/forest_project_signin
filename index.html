@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>林業保育署重大業務成果 · 即時同步</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root{
+  /* 和色 Japanese color tokens */
+  --kon:#1c2c40;         /* 紺色 深藍夜幕 */
+  --kon-2:#233650;
+  --washi:#f3ecd9;       /* 生成り washi paper */
+  --washi-2:#e9dfc4;
+  --sumi:#2a271f;        /* 墨 ink */
+  --shu:#c1442c;         /* 朱色 vermillion / hanko */
+  --shu-dark:#8f2f1e;
+  --kincha:#c19a4b;      /* 金茶 gold */
+  --matsuba:#5c7a52;     /* 松葉色 pine — 保育管理組 */
+  --mizu:#5f93a6;        /* 水色 — 森林育樂組 */
+  --kaki:#c17a3f;        /* 柿色 — 森林產業組 */
+  --fuji:#8577a3;        /* 藤色 — 保育企劃組 */
+  --nando:#4a7c85;       /* 納戶色 — 集水區治理組 */
+  --beniger:#9c4b3a;     /* 紅柄色 — 森林管理組 */
+  --radius:2px;
+  --live:#7fb37a;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(243,236,217,0.05) 1px, transparent 0) 0 0/26px 26px,
+    linear-gradient(160deg,#141f2f 0%, var(--kon) 45%, var(--kon-2) 100%);
+  font-family:'Noto Sans TC', sans-serif;
+  color:var(--washi);
+  padding:0 0 90px;
+  overflow-x:hidden;
+}
+
+/* ---------- masthead ---------- */
+.masthead{
+  max-width:1240px;
+  margin:0 auto;
+  padding:56px clamp(20px,4vw,40px) 0;
+  opacity:0;
+  animation:riseIn .7s ease forwards;
+}
+.eyebrow{
+  font-family:'JetBrains Mono', monospace;
+  font-size:12px;
+  letter-spacing:.24em;
+  color:var(--kincha);
+  text-transform:uppercase;
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.eyebrow::before{
+  content:"";
+  width:22px;height:1px;
+  background:var(--kincha);
+  display:inline-block;
+}
+h1{
+  font-family:'Noto Serif TC', serif;
+  font-weight:900;
+  font-size:clamp(30px, 4.4vw, 48px);
+  margin:0 0 14px;
+  line-height:1.35;
+  letter-spacing:.04em;
+}
+.masthead p{
+  font-size:14.5px;
+  color:#d6cdb2;
+  line-height:1.85;
+  max-width:640px;
+  margin:0;
+}
+.masthead .src{
+  margin-top:18px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:11.5px;
+  color:#9caebd;
+}
+
+/* seigaiha trim — thin decorative wave rule */
+.seigaiha{
+  max-width:1240px;
+  margin:32px auto 0;
+  padding:0 clamp(20px,4vw,40px);
+}
+.seigaiha i{
+  display:block;
+  height:14px;
+  background-image: repeating-radial-gradient(circle at 0 100%, transparent 0, transparent 6px, rgba(193,154,75,.35) 7px, transparent 8px);
+  background-size: 24px 24px;
+  background-position: 0 100%;
+  opacity:.7;
+}
+
+/* ---------- live status bar ---------- */
+.statusbar-wrap{
+  max-width:1240px;
+  margin:28px auto 0;
+  padding:0 clamp(20px,4vw,40px);
+  opacity:0;
+  animation:riseIn .7s ease forwards;
+  animation-delay:.06s;
+}
+.statusbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+  background:rgba(243,236,217,0.06);
+  border:1px solid rgba(193,154,75,0.28);
+  border-radius:var(--radius);
+  padding:12px 18px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:11.5px;
+  color:#cdd9e2;
+}
+.statusbar-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--live);
+  box-shadow:0 0 0 0 rgba(127,179,122,.6);
+  animation:pulse 2s infinite;
+  flex-shrink:0;
+}
+.dot.err{ background:var(--shu); animation:none; }
+.dot.loading{ background:var(--kincha); }
+@keyframes pulse{
+  0%{ box-shadow:0 0 0 0 rgba(127,179,122,.55); }
+  70%{ box-shadow:0 0 0 7px rgba(127,179,122,0); }
+  100%{ box-shadow:0 0 0 0 rgba(127,179,122,0); }
+}
+.status-text b{ color:var(--washi); font-weight:700; }
+.status-text .muted{ color:#8fa0ae; }
+.refresh-btn{
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;
+  letter-spacing:.06em;
+  color:var(--kon);
+  background:var(--kincha);
+  border:none;
+  padding:7px 14px;
+  border-radius:20px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  transition:filter .15s ease, transform .15s ease;
+}
+.refresh-btn:hover{ filter:brightness(1.08); }
+.refresh-btn:active{ transform:scale(.96); }
+.refresh-btn:disabled{ opacity:.55; cursor:default; }
+.refresh-btn svg{
+  width:12px;height:12px;
+  transition:transform .5s ease;
+}
+.refresh-btn.spinning svg{ animation:spin .8s linear infinite; }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+.auto-toggle{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:11px;
+  color:#9caebd;
+  cursor:pointer;
+  user-select:none;
+}
+.auto-toggle input{ accent-color:var(--kincha); cursor:pointer; }
+
+/* ---------- sections ---------- */
+.section{
+  max-width:1240px;
+  margin:48px auto 0;
+  padding:0 clamp(20px,4vw,40px);
+  opacity:0;
+}
+.section.show{ animation:riseIn .6s ease forwards; }
+
+.section-body{
+  display:flex;
+  gap:18px;
+  align-items:stretch;
+}
+.section-tag{
+  flex:0 0 auto;
+  width:46px;
+  border-radius:var(--radius);
+  background:var(--tag-color, var(--matsuba));
+  color:var(--washi);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px 0;
+  writing-mode:vertical-rl;
+  text-orientation:upright;
+  font-family:'Noto Serif TC', serif;
+  font-weight:700;
+  font-size:15px;
+  letter-spacing:.18em;
+  gap:14px;
+}
+.section-tag .count{
+  writing-mode:horizontal-tb;
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px;
+  letter-spacing:0;
+  opacity:.85;
+  margin-top:8px;
+}
+.section-cards{
+  flex:1 1 auto;
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:16px;
+}
+
+@media (min-width:1500px){
+  .section-cards{ grid-template-columns:repeat(5, 1fr); }
+}
+@media (max-width:1099px){
+  .section-cards{ grid-template-columns:repeat(3, 1fr); }
+}
+@media (max-width:759px){
+  .section-cards{ grid-template-columns:repeat(2, 1fr); }
+}
+@media (max-width:639px){
+  .section-body{ flex-direction:column; }
+  .section-tag{
+    width:100%;
+    writing-mode:horizontal-tb;
+    flex-direction:row;
+    justify-content:flex-start;
+    gap:10px;
+    padding:10px 16px;
+    letter-spacing:.1em;
+  }
+  .section-tag .count{ margin-top:0; margin-left:auto; }
+  .statusbar{ flex-direction:column; align-items:flex-start; }
+}
+@media (max-width:420px){
+  .section-cards{ grid-template-columns:1fr; }
+}
+
+/* ---------- flashcards ---------- */
+.card{
+  perspective:1400px;
+  height:200px;
+}
+.card-inner{
+  position:relative;
+  width:100%; height:100%;
+  transition:transform .6s cubic-bezier(.2,.7,.3,1);
+  transform-style:preserve-3d;
+  cursor:pointer;
+}
+.card.flipped .card-inner{ transform:rotateY(180deg); }
+.card.updated .card-inner{ animation:flash 1.4s ease; }
+@keyframes flash{
+  0%{ box-shadow:0 0 0 0 rgba(193,154,75,.85); }
+  30%{ box-shadow:0 0 0 6px rgba(193,154,75,.35); }
+  100%{ box-shadow:0 0 0 0 rgba(193,154,75,0); }
+}
+
+.face{
+  position:absolute; inset:0;
+  backface-visibility:hidden;
+  border-radius:var(--radius);
+  padding:18px 18px 16px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.face-front{
+  background:var(--washi);
+  color:var(--sumi);
+  box-shadow:0 14px 26px -16px rgba(0,0,0,.55);
+  justify-content:space-between;
+  border-left:4px solid var(--accent, var(--matsuba));
+}
+.card-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:10px;
+}
+.card-label{
+  font-family:'Noto Serif TC', serif;
+  font-weight:700;
+  font-size:13.5px;
+  line-height:1.5;
+  color:#3c3527;
+}
+.card-year-badge{
+  flex:0 0 auto;
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px;
+  letter-spacing:.03em;
+  color:var(--washi);
+  background:var(--accent, var(--matsuba));
+  padding:2px 8px;
+  border-radius:10px;
+  white-space:nowrap;
+}
+.card-number{
+  font-family:'Noto Serif TC', serif;
+  font-weight:900;
+  font-size:clamp(22px, 3vw, 28px);
+  display:flex;
+  align-items:baseline;
+  gap:6px;
+  color:var(--sumi);
+}
+.card-number .unit{
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--shu-dark);
+  font-family:'Noto Sans TC', sans-serif;
+}
+.card-number-compact{
+  font-size:clamp(14px, 2vw, 17px) !important;
+  font-weight:800 !important;
+  line-height:1.4;
+}
+.card-sub-subtitle{
+  margin-top:4px;
+  font-family:'Noto Sans TC', sans-serif;
+  font-size:10.5px;
+  font-weight:600;
+  color:rgba(60,53,39,.55);
+}
+.card-foot{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  margin-top:8px;
+  gap:8px;
+}
+.card-date{
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px;
+  color:#8a7f5c;
+  letter-spacing:.03em;
+}
+.card-hint{
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px;
+  color:#9c8f68;
+  letter-spacing:.05em;
+  white-space:nowrap;
+}
+
+.face-back{
+  background:var(--accent, var(--matsuba));
+  color:var(--washi);
+  transform:rotateY(180deg);
+  justify-content:space-between;
+  box-shadow:0 14px 26px -16px rgba(0,0,0,.55);
+}
+.back-title{
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:rgba(243,236,217,.75);
+}
+.back-body{
+  font-size:11.8px;
+  line-height:1.65;
+  color:var(--washi);
+  overflow-y:auto;
+  flex:1 1 auto;
+  margin:6px 0;
+}
+.back-body a{ color:var(--kincha); }
+.back-subtitle{
+  font-family:'Noto Sans TC', sans-serif;
+  font-size:9.5px;
+  color:rgba(243,236,217,.55);
+  margin-top:-4px;
+  margin-bottom:8px;
+}
+.year-list{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+.year-line{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:8px;
+  padding:5px 0;
+  border-bottom:1px dashed rgba(243,236,217,.2);
+}
+.year-line:last-child{ border-bottom:none; }
+.year-badge{
+  font-family:'JetBrains Mono', monospace;
+  font-size:10.5px;
+  color:rgba(243,236,217,.8);
+  flex:0 0 auto;
+}
+.year-num{
+  font-family:'Noto Serif TC', serif;
+  font-weight:700;
+  font-size:13px;
+  color:var(--washi);
+  text-align:right;
+}
+.year-num .year-unit{
+  font-family:'Noto Sans TC', sans-serif;
+  font-weight:500;
+  font-size:10.5px;
+  color:rgba(243,236,217,.75);
+  margin-left:3px;
+}
+.year-inline-note{
+  font-family:'Noto Sans TC', sans-serif;
+  font-weight:500;
+  font-size:9.5px;
+  font-style:italic;
+  color:rgba(243,236,217,.55);
+  margin-left:5px;
+  white-space:nowrap;
+}
+.back-note{
+  margin-top:10px;
+  padding-top:8px;
+  border-top:1px solid rgba(243,236,217,.25);
+  font-size:10.5px;
+  line-height:1.6;
+  color:rgba(243,236,217,.75);
+}
+.back-note > div + div{ margin-top:6px; }
+.no-year-note{ font-size:11.8px; line-height:1.65; }
+.back-row{
+  display:flex;
+  justify-content:space-between;
+  font-family:'JetBrains Mono', monospace;
+  font-size:10.5px;
+  color:rgba(243,236,217,.85);
+  padding-top:8px;
+  border-top:1px solid rgba(243,236,217,.25);
+}
+
+/* ---------- loading / error states ---------- */
+.state-panel{
+  max-width:1240px;
+  margin:48px auto 0;
+  padding:0 clamp(20px,4vw,40px);
+}
+.state-box{
+  background:rgba(243,236,217,0.05);
+  border:1px dashed rgba(193,154,75,0.4);
+  border-radius:var(--radius);
+  padding:36px 24px;
+  text-align:center;
+  font-family:'JetBrains Mono', monospace;
+  font-size:12.5px;
+  color:#cdd9e2;
+}
+.state-box .spinner{
+  width:28px;height:28px;
+  margin:0 auto 14px;
+  border-radius:50%;
+  border:2.5px solid rgba(193,154,75,.3);
+  border-top-color:var(--kincha);
+  animation:spin .8s linear infinite;
+}
+.state-box .retry-btn{
+  margin-top:14px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;
+  color:var(--washi);
+  background:var(--shu);
+  border:none;
+  padding:8px 18px;
+  border-radius:20px;
+  cursor:pointer;
+}
+.state-box .diag-toggle-btn{
+  margin-top:14px;
+  margin-left:8px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;
+  color:var(--sumi);
+  background:var(--kincha);
+  border:none;
+  padding:8px 18px;
+  border-radius:20px;
+  cursor:pointer;
+}
+.diag-box{
+  margin-top:14px;
+  background:rgba(0,0,0,0.28);
+  border:1px solid rgba(193,154,75,0.3);
+  border-radius:var(--radius);
+  padding:16px 18px;
+  text-align:left;
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;
+  line-height:1.8;
+  color:#dbe4ea;
+}
+.diag-box h4{
+  margin:0 0 8px;
+  font-size:11.5px;
+  letter-spacing:.08em;
+  color:var(--kincha);
+  text-transform:uppercase;
+}
+.diag-box .diag-row{
+  margin-bottom:10px;
+  word-break:break-all;
+}
+.diag-box .diag-label{ color:#8fa0ae; }
+.diag-box .diag-fail{ color:#e3897a; }
+.diag-box .diag-ok{ color:var(--live); }
+.diag-box a{ color:var(--kincha); }
+.diag-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+}
+.diag-actions button, .diag-actions a{
+  font-family:'JetBrains Mono', monospace;
+  font-size:10.5px;
+  color:var(--washi);
+  background:rgba(243,236,217,0.1);
+  border:1px solid rgba(243,236,217,0.3);
+  padding:6px 12px;
+  border-radius:16px;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-block;
+}
+.diag-actions button:hover, .diag-actions a:hover{ background:rgba(243,236,217,0.2); }
+.diag-checklist{
+  margin:10px 0 0;
+  padding-left:18px;
+  color:#cdd9e2;
+}
+.diag-checklist li{ margin-bottom:5px; }
+
+.skeleton-cards{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:16px;
+  margin-top:20px;
+}
+@media (max-width:1099px){ .skeleton-cards{ grid-template-columns:repeat(3, 1fr); } }
+@media (max-width:759px){ .skeleton-cards{ grid-template-columns:repeat(2, 1fr); } }
+@media (max-width:420px){ .skeleton-cards{ grid-template-columns:1fr; } }
+.skeleton-card{
+  height:200px;
+  border-radius:var(--radius);
+  background:linear-gradient(100deg, rgba(243,236,217,.05) 30%, rgba(243,236,217,.12) 50%, rgba(243,236,217,.05) 70%);
+  background-size:200% 100%;
+  animation:shimmer 1.4s infinite;
+}
+@keyframes shimmer{
+  from{ background-position:200% 0; }
+  to{ background-position:-200% 0; }
+}
+
+footer{
+  max-width:1240px;
+  margin:56px auto 0;
+  padding:0 clamp(20px,4vw,40px);
+  text-align:center;
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;
+  color:#7e8fa0;
+  opacity:0;
+}
+footer.show{ animation:riseIn .6s ease forwards; }
+footer a{ color:var(--kincha); text-decoration:none; border-bottom:1px solid currentColor; }
+
+@keyframes riseIn{
+  from{ opacity:0; transform:translateY(14px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+@media (prefers-reduced-motion: reduce){
+  *{ animation:none !important; transition:none !important; }
+  .masthead,.hero-wrap,.section,.statusbar-wrap,footer{ opacity:1 !important; }
+}
+
+.card-inner:focus-visible{
+  outline:2px solid var(--kincha);
+  outline-offset:4px;
+}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="eyebrow">執行成果紀錄 · 即時同步</div>
+  <h1>林業保育署重大業務成果</h1>
+  <p>彙整各業務組別累計數據，以字卡形式呈現。資料直接連線 Google 試算表，卡片正面顯示每個項目「最新年度」的數值，點按卡片翻面可查看該項目各年度的完整資料；若項目無年度資料，翻面則顯示備註說明。資料每 5 分鐘自動同步一次。</p>
+  <div class="src">資料來源 · 林業署重要成果統計資料（Google 試算表）</div>
+</div>
+
+<div class="seigaiha"><i></i></div>
+
+<div class="statusbar-wrap">
+  <div class="statusbar">
+    <div class="statusbar-left">
+      <span class="dot loading" id="statusDot"></span>
+      <span class="status-text" id="statusText">正在連線試算表…</span>
+    </div>
+    <div class="statusbar-left">
+      <label class="auto-toggle">
+        <input type="checkbox" id="autoToggle" checked>
+        自動更新（每 5 分鐘）
+      </label>
+      <button class="refresh-btn" id="refreshBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+        立即更新
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="statePanel" class="state-panel" style="display:none;">
+  <div class="state-box" id="stateBox"></div>
+  <div class="diag-box" id="diagBox" style="display:none;"></div>
+</div>
+
+<div id="sections"></div>
+<footer id="footer">更新時間採民國年格式（YYY/MM/DD）· 卡片正面顯示各項目最新年度資料，翻面可查看各年度完整數據 · 資料依試算表即時整理</footer>
+
+<script>
+/* ====== 設定 ====== */
+const SHEET_ID = '1yMCIk7Qb8Yk2JHuv0G-70qN7svbbQCmHzQmJ0yMki30';
+const SHEET_GID = '1508398255';
+const AUTO_REFRESH_MS = 5 * 60 * 1000; // 5 分鐘
+const FETCH_TIMEOUT_MS = 12000;
+
+const ACCENT_MAP = {
+  '保育管理組': 'var(--matsuba)',
+  '森林育樂組': 'var(--mizu)',
+  '森林產業組': 'var(--kaki)',
+  '保育企劃組': 'var(--fuji)',
+  '集水區治理組': 'var(--nando)',
+  '森林管理組': 'var(--beniger)'
+};
+const GROUP_ORDER = ['保育企劃組', '保育管理組', '森林管理組', '森林產業組', '集水區治理組', '森林育樂組'];
+const COL_ALIASES = {
+  name:   ['項目'],
+  year:   ['年度'],
+  value:  ['值'],
+  unit:   ['單位'],
+  date:   ['更新時間'],
+  division: ['組別'],
+  note:   ['備註']
+};
+
+let currentItemsKey = ''; // 用於偵測資料是否有變化
+let autoTimer = null;
+let isFetching = false;
+let lastAttemptLog = []; // 診斷用：記錄每次嘗試的方式與結果
+
+const sectionsEl = document.getElementById('sections');
+const statePanel = document.getElementById('statePanel');
+const stateBox = document.getElementById('stateBox');
+const diagBox = document.getElementById('diagBox');
+const statusDot = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+const refreshBtn = document.getElementById('refreshBtn');
+const autoToggle = document.getElementById('autoToggle');
+const footerEl = document.getElementById('footer');
+
+function escapeHtml(str){
+  return String(str ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+/* 民國年 7 碼字串（例如 1150821）→ 115/08/21；已含斜線則原樣回傳 */
+function formatRocDate(raw){
+  const s = String(raw ?? '').trim();
+  if(!s) return '';
+  if(s.includes('/')) return s;
+  const digits = s.replace(/\D/g, '');
+  if(digits.length === 7){
+    return `${digits.slice(0,3)}/${digits.slice(3,5)}/${digits.slice(5,7)}`;
+  }
+  return s;
+}
+
+/* 供排序比較用的純數字日期值 */
+function dateSortValue(raw){
+  const digits = String(raw ?? '').replace(/\D/g, '');
+  return digits ? parseInt(digits, 10) : 0;
+}
+
+/* 將值欄位（可能含千分位逗號等符號）轉為純數字，供加總使用 */
+function parseNumber(raw){
+  const cleaned = String(raw ?? '').replace(/[^0-9.\-]/g, '');
+  const n = parseFloat(cleaned);
+  return isNaN(n) ? 0 : n;
+}
+
+/* 將數字加上千分位逗號 */
+function formatNumber(n){
+  return n.toLocaleString('en-US', { maximumFractionDigits: 2 });
+}
+
+/* 解析「年度」欄位：回傳顯示用文字與排序用數值；若欄位為空或無法解析則視為無年度資料 */
+function parseYearInfo(raw){
+  const s = String(raw ?? '').trim();
+  if(!s) return { label:'', sortValue:-1, hasYear:false };
+  const nums = s.match(/\d+/g);
+  if(!nums) return { label:s, sortValue:-1, hasYear:false };
+  const sortValue = Math.max(...nums.map(n => parseInt(n, 10)));
+  return { label:s, sortValue, hasYear:true };
+}
+
+/* 從備註欄拆出網址與純文字備註 */
+function extractNoteAndUrl(rawNote){
+  const text = String(rawNote ?? '').trim();
+  if(!text) return { note:'', url:'' };
+  const match = text.match(/https?:\/\/[^\s、，)<]+/);
+  if(!match) return { note:text, url:'' };
+  const url = match[0];
+  let note = (text.slice(0, match.index) + text.slice(match.index + url.length))
+    .replace(/[：:\s]+$/,'')
+    .replace(/^[（(]\s*/,'')
+    .replace(/\s*[）)]$/,'')
+    .replace(/\s{2,}/g,' ')
+    .trim();
+  return { note, url };
+}
+
+/* 備註文字內若含有 <br> 標記（含各種變體）或實際換行字元，一律轉為真正的換行呈現 */
+function formatNoteHtml(note){
+  if(!note) return '';
+  const withPlaceholder = String(note).replace(/\r\n|\r|\n/g, '\u0000NL\u0000');
+  let escaped = escapeHtml(withPlaceholder);
+  escaped = escaped.split('\u0000NL\u0000').join('<br>');
+  escaped = escaped.replace(/&lt;br\s*\/?&gt;/gi, '<br>');
+  return escaped;
+}
+
+function linkify(note, url){
+  const safe = formatNoteHtml(note);
+  if(url) return `${safe}${safe ? '<br>' : ''}<a href="${escapeHtml(url)}" target="_blank" rel="noopener">查看更多 →</a>`;
+  return safe || '此項目暫無備註。';
+}
+
+/* 將備註拆成「核准…」片段（用於正面/年度行內顯示）與其餘說明文字（放在翻面最下方）。
+   只有真的以「核准」開頭的片段才視為核准數；不是的話整段都當作一般備註。 */
+function splitBySemicolon(raw){
+  const s = String(raw || '').trim();
+  if(!s) return { first: '', rest: '' };
+  const idx = s.search(/[;；]/);
+  if(idx === -1){
+    if(/^核准/.test(s)) return { first: s, rest: '' };
+    return { first: '', rest: s };
+  }
+  const first = s.slice(0, idx).trim();
+  const rest = s.slice(idx + 1).trim();
+  if(/^核准/.test(first)) return { first, rest };
+  return { first: '', rest: s };
+}
+
+/* 找出試算表欄位在回傳資料中的索引位置 */
+function resolveColumnIndex(cols, aliases){
+  for(let i = 0; i < cols.length; i++){
+    const label = (cols[i].label || '').trim();
+    if(aliases.some(a => label.includes(a))) return i;
+  }
+  return -1;
+}
+
+function cellText(cell){
+  if(!cell) return '';
+  if(cell.f !== undefined && cell.f !== null && cell.f !== '') return String(cell.f);
+  if(cell.v === undefined || cell.v === null) return '';
+  if(typeof cell.v === 'number') return String(Math.round(cell.v * 100) / 100);
+  return String(cell.v);
+}
+
+function parseGvizResponse(response){
+  const cols = response.table.cols;
+  const idx = {
+    name: resolveColumnIndex(cols, COL_ALIASES.name),
+    year: resolveColumnIndex(cols, COL_ALIASES.year),
+    value: resolveColumnIndex(cols, COL_ALIASES.value),
+    unit: resolveColumnIndex(cols, COL_ALIASES.unit),
+    date: resolveColumnIndex(cols, COL_ALIASES.date),
+    division: resolveColumnIndex(cols, COL_ALIASES.division),
+    note: resolveColumnIndex(cols, COL_ALIASES.note)
+  };
+  if(idx.name === -1 || idx.value === -1 || idx.division === -1){
+    throw new Error('找不到必要欄位（項目/值/組別），請確認試算表欄位名稱。');
+  }
+
+  const rows = response.table.rows || [];
+
+  /* 第一步：把每一列轉成單筆「年度資料」紀錄，並依「項目＋組別」分組 */
+  const groupMap = new Map();
+  rows.forEach(row => {
+    const c = row.c || [];
+    const name = idx.name >= 0 ? cellText(c[idx.name]).trim() : '';
+    const division = idx.division >= 0 ? cellText(c[idx.division]).trim() : '';
+    if(!name || !division) return; // 略過空白列
+
+    const rawYear = idx.year >= 0 ? cellText(c[idx.year]).trim() : '';
+    const value = idx.value >= 0 ? cellText(c[idx.value]).trim() : '';
+    const unit = idx.unit >= 0 ? cellText(c[idx.unit]).trim() : '';
+    const rawDate = idx.date >= 0 ? cellText(c[idx.date]).trim() : '';
+    const rawNote = idx.note >= 0 ? cellText(c[idx.note]).trim() : '';
+    const { note, url } = extractNoteAndUrl(rawNote);
+    const yearInfo = parseYearInfo(rawYear);
+
+    const key = name + '||' + division;
+    if(!groupMap.has(key)) groupMap.set(key, { name, division, byYearLabel: new Map() });
+    const group = groupMap.get(key);
+
+    const entry = {
+      yearLabel: yearInfo.label,
+      yearSort: yearInfo.sortValue,
+      hasYear: yearInfo.hasYear,
+      value, unit,
+      date: formatRocDate(rawDate),
+      dateSort: dateSortValue(rawDate),
+      note, url
+    };
+
+    /* 同一項目＋組別＋年度若重複出現，以最新更新時間為準 */
+    const dedupeKey = yearInfo.hasYear ? ('y:' + yearInfo.label) : ('n:' + group.byYearLabel.size);
+    const existing = group.byYearLabel.get(dedupeKey);
+    if(!existing || entry.dateSort >= existing.dateSort){
+      group.byYearLabel.set(dedupeKey, entry);
+    }
+  });
+
+  /* 第二步：整理每個項目的年度清單，決定卡片正面要顯示的「最新年度」資料 */
+  const rawItems = [];
+  groupMap.forEach(group => {
+    const entries = Array.from(group.byYearLabel.values());
+    const yearEntries = entries
+      .filter(e => e.hasYear)
+      .sort((a, b) => b.yearSort - a.yearSort || b.dateSort - a.dateSort);
+    const noYearEntries = entries.filter(e => !e.hasYear);
+
+    const hasYearData = yearEntries.length > 0;
+    const latest = hasYearData ? yearEntries[0] : (noYearEntries[0] || entries[0]);
+    if(!latest) return;
+
+    rawItems.push({
+      name: group.name,
+      division: group.division,
+      hasYearData,
+      latest,
+      yearEntries,
+      noYearEntries,
+      fallbackNote: noYearEntries[0] || latest
+    });
+  });
+
+  /* ---- 顯示名稱對照：部分項目原始名稱較長，改用簡短名稱顯示（不影響資料本身） ---- */
+  const DISPLAY_NAME_OVERRIDES = {
+    '自然碳匯與生物多樣性專案媒合平臺': 'ESG平臺媒合案件數',
+    '自然碳匯與生物多樣性專案媒合平臺 - 合作團體': 'ESG平臺合作團體',
+    '自然碳匯與生物多樣性專案媒合平臺 - 累積碳匯效益': 'ESG平臺碳匯效益',
+    '自然碳匯與生物多樣性專案媒合平臺 - 累計金額': 'ESG平臺媒合案件投入金額'
+  };
+  const items = rawItems.map(it => {
+    if(DISPLAY_NAME_OVERRIDES[it.name]) it.name = DISPLAY_NAME_OVERRIDES[it.name];
+    return it;
+  });
+
+  /* ---- 特定項目正面改顯示「歷年資料總和」，翻面仍維持各年度清單＋備註 ---- */
+  const SUM_FRONT_ITEM_NAMES = ['累計租地補償收回面積'];
+  items.forEach(it => {
+    if(SUM_FRONT_ITEM_NAMES.includes(it.name)){
+      const total = it.yearEntries.concat(it.noYearEntries || [])
+        .reduce((s, e) => s + parseNumber(e.value), 0);
+      it.latest = Object.assign({}, it.latest, { value: formatNumber(total) });
+      it.frontIsSum = true;
+    }
+  });
+
+  /* ---- 特定項目正面數字下方加註「歷年數量加總」小副標（數字本身仍是最新年度，不取代） ---- */
+  const FRONT_SUM_SUBTITLE_ITEM_NAMES = [
+    '綠鬣蜥移除成果', '埃及聖䴉移除成果', '黑熊救傷收容數量',
+    '銀合歡移除面積', '小花蔓澤蘭移除面積', '刺軸含羞木移除面積', '互花米草移除面積', '銀膠菊移除面積',
+    'ESG平臺媒合案件數', 'ESG平臺合作團體', 'ESG平臺碳匯效益', 'ESG平臺媒合案件投入金額'
+  ];
+  items.forEach(it => {
+    if(FRONT_SUM_SUBTITLE_ITEM_NAMES.includes(it.name)){
+      const total = it.yearEntries.concat(it.noYearEntries || [])
+        .reduce((s, e) => s + parseNumber(e.value), 0);
+      it.frontSumSubtitle = `歷年累計 ${formatNumber(total)}${it.latest.unit}`;
+    }
+  });
+
+  /* ---- 獎勵輔導造林計畫(新制)受理/核准新植面積：正面（及翻面各年度）改成「受理面積X/核准Y」的組合格式，
+     核准數取自該年度備註欄「分號」前段，分號後段的其餘文字才當一般備註顯示在翻面最下方 ---- */
+  const APPROVAL_SPLIT_ITEM_NAME = '獎勵輔導造林計畫(新制)受理/核准新植面積';
+  items.forEach(it => {
+    if(it.name !== APPROVAL_SPLIT_ITEM_NAME) return;
+    it.isApprovalSplit = true;
+    const { first: approved } = splitBySemicolon(it.latest.note);
+    const composed = `受理面積${it.latest.value || '—'}${it.latest.unit}` + (approved ? `/${approved}` : '');
+    it.latest = Object.assign({}, it.latest, { value: composed, unit: '' });
+  });
+
+  /* ---- 個別森林遊樂區項目：不獨立成字卡，改為加總後掛在對應的累計卡片翻面 ---- */
+  const VISITOR_TOTAL_NAME = '國家森林遊樂區遊客人數';
+  const REVENUE_TOTAL_NAME = '國家森林遊樂區門票收入';
+  const isParkVisitorItem = name => name.includes('國家森林遊樂區') && name.includes('遊客') && name !== VISITOR_TOTAL_NAME;
+  const isParkRevenueItem = name => name.includes('國家森林遊樂區') && (name.includes('門票') || name.includes('收入')) && name !== REVENUE_TOTAL_NAME;
+  const parkLabel = name => {
+    const m = name.match(/^(.*?)國家森林遊樂區/);
+    return m && m[1] ? m[1] : name;
+  };
+  /* 找出一群項目裡實際出現過的最新年度（例如115），避免跟其他項目的年度對不上 */
+  const maxYearAmong = list => list.reduce((max, it) => {
+    const localMax = it.yearEntries.reduce((m, e) => Math.max(m, e.yearSort), -1);
+    return Math.max(max, localMax);
+  }, -1);
+  /* 取出該項目「目標年度」那一筆的值與備註；找不到精準符合的年度時，退而使用該園區僅有的一筆，
+     或更新時間最新的一筆（避免因年度欄位格式辨識失敗而誤判成0）。值為 0 或「-」都視為0 */
+  const targetYearEntryOf = (it, targetYear) => {
+    const all = it.yearEntries.concat(it.noYearEntries || []);
+    if(!all.length) return { value: 0, note: '' };
+    let entry = targetYear >= 0 ? it.yearEntries.find(e => e.yearSort === targetYear) : null;
+    if(!entry){
+      entry = all.length === 1 ? all[0] : all.slice().sort((a, b) => b.dateSort - a.dateSort)[0];
+    }
+    const raw = String(entry.value ?? '').trim();
+    const isDash = raw === '-' || raw === '－' || raw === '—';
+    const value = isDash ? 0 : parseNumber(entry.value);
+    return { value, note: entry.note || '' };
+  };
+
+  const visitorItemsRaw = [];
+  const revenueItemsRaw = [];
+  const afterParks = [];
+  items.forEach(it => {
+    if(isParkVisitorItem(it.name)){ visitorItemsRaw.push(it); return; }
+    if(isParkRevenueItem(it.name)){ revenueItemsRaw.push(it); return; }
+    afterParks.push(it);
+  });
+
+  /* 若整批個別園區都抓不到年度，標題改用整份試算表偵測到的最新年度，避免顯示 -1 */
+  const SHEETWIDE_LATEST_YEAR = items.reduce((max, it) => {
+    const localMax = it.yearEntries.reduce((m, e) => Math.max(m, e.yearSort), -1);
+    return Math.max(max, localMax);
+  }, -1);
+  const visitorLatestYear = maxYearAmong(visitorItemsRaw) >= 0 ? maxYearAmong(visitorItemsRaw) : SHEETWIDE_LATEST_YEAR;
+  const revenueLatestYear = maxYearAmong(revenueItemsRaw) >= 0 ? maxYearAmong(revenueItemsRaw) : SHEETWIDE_LATEST_YEAR;
+
+  const buildParkRanking = (list, targetYear) => list
+    .map(it => {
+      const e = targetYearEntryOf(it, targetYear);
+      return { label: parkLabel(it.name), value: e.value, note: e.note, unit: it.latest.unit };
+    })
+    .sort((a, b) => b.value - a.value);
+
+  const visitorRanking = buildParkRanking(visitorItemsRaw, visitorLatestYear);
+  const revenueRanking = buildParkRanking(revenueItemsRaw, revenueLatestYear);
+
+  afterParks.forEach(it => {
+    if(it.name === VISITOR_TOTAL_NAME){
+      it.rankBreakdown = visitorRanking;
+      it.rankTitle = `${visitorLatestYear}年度各遊樂區排行 · 大到小`;
+    }
+    if(it.name === REVENUE_TOTAL_NAME){
+      it.rankBreakdown = revenueRanking;
+      it.rankTitle = `${revenueLatestYear}年度各遊樂區排行 · 大到小`;
+    }
+  });
+
+  /* 供外來種分項合併使用：加總同一物種項目底下所有列的值 */
+  const sumItemValue = it => it.yearEntries.concat(it.noYearEntries || [])
+    .reduce((s, e) => s + parseNumber(e.value), 0);
+
+  /* ---- 外來種相關項目（銀合歡／銀膠菊／刺軸含羞木／小花蔓澤蘭）：同物種同類型的多個分項，合併成一張卡片，翻面顯示各分項加總排行 ---- */
+  const SPECIES_KEYWORDS = ['銀合歡', '銀膠菊', '刺軸含羞木', '小花蔓澤蘭'];
+  const METRIC_TYPES = ['移除面積', '收購'];
+  const matchSpeciesMetric = name => {
+    const kw = SPECIES_KEYWORDS.find(k => name.startsWith(k));
+    if(!kw) return null;
+    const metric = METRIC_TYPES.find(m => name.includes(m));
+    if(!metric) return null;
+    return { cardName: kw + metric };
+  };
+  const speciesSubLabel = (name, cardName) => {
+    let rest = name.slice(cardName.length).trim();
+    rest = rest.replace(/^[（(]\s*/, '').replace(/\s*[）)]$/, '').trim();
+    return rest || name;
+  };
+
+  const speciesGroups = new Map(); // cardName -> { division, members:[{item,label}] }
+  const finalItems = [];
+  afterParks.forEach(it => {
+    const match = matchSpeciesMetric(it.name);
+    if(!match){ finalItems.push(it); return; }
+    if(!speciesGroups.has(match.cardName)) speciesGroups.set(match.cardName, { division: it.division, members: [] });
+    speciesGroups.get(match.cardName).members.push({ item: it, label: speciesSubLabel(it.name, match.cardName) });
+  });
+
+  speciesGroups.forEach((grp, cardName) => {
+    if(grp.members.length <= 1){
+      grp.members.forEach(m => finalItems.push(m.item));
+      return;
+    }
+    const breakdown = grp.members
+      .map(m => ({ label: m.label, total: sumItemValue(m.item), unit: m.item.latest.unit }))
+      .sort((a, b) => b.total - a.total);
+
+    const allEntries = [];
+    grp.members.forEach(m => {
+      m.item.yearEntries.forEach(e => allEntries.push(e));
+      (m.item.noYearEntries || []).forEach(e => allEntries.push(e));
+    });
+    const yearEntries = allEntries.filter(e => e.hasYear).sort((a, b) => b.yearSort - a.yearSort || b.dateSort - a.dateSort);
+    const latest = yearEntries[0] || allEntries.slice().sort((a, b) => b.dateSort - a.dateSort)[0];
+
+    finalItems.push({
+      name: cardName,
+      division: grp.division,
+      hasYearData: !!(latest && latest.hasYear),
+      latest,
+      yearEntries: [],
+      noYearEntries: [],
+      fallbackNote: latest,
+      breakdown,
+      breakdownTitle: '分項加總 · 大到小'
+    });
+  });
+
+  return finalItems;
+}
+
+function groupItems(items){
+  const groupMap = {};
+  items.forEach(item => {
+    if(!(item.division in groupMap)) groupMap[item.division] = [];
+    groupMap[item.division].push(item);
+  });
+  const known = GROUP_ORDER.filter(div => groupMap[div]).map(div => ({ division: div, items: groupMap[div] }));
+  const extra = Object.keys(groupMap).filter(div => !GROUP_ORDER.includes(div)).map(div => ({ division: div, items: groupMap[div] }));
+  return known.concat(extra);
+}
+
+function renderSections(items, opts){
+  opts = opts || {};
+  const changedKeys = opts.changedKeys || new Set();
+  const groups = groupItems(items);
+
+  sectionsEl.innerHTML = '';
+  groups.forEach((group, gi) => {
+    const section = document.createElement('div');
+    section.className = 'section';
+    const accent = ACCENT_MAP[group.division] || 'var(--matsuba)';
+
+    const cardsHtml = group.items.map(item => {
+      const key = item.name + '||' + item.division;
+      const isNew = changedKeys.has(key);
+      const latest = item.latest;
+
+      const yearBadge = (item.hasYearData && !item.frontIsSum)
+        ? `<span class="card-year-badge">${escapeHtml(latest.yearLabel)}年度</span>`
+        : '';
+
+      let backTitle, backSubtitle, backBody;
+      if(item.rankBreakdown && item.rankBreakdown.length){
+        backTitle = item.rankTitle || '各遊樂區排行';
+        backSubtitle = '';
+        const rowsHtml = item.rankBreakdown.map(p => {
+          const isZero = p.value === 0;
+          const noteText = isZero ? `(${p.note || '無統計'})` : '';
+          return `
+          <div class="year-line">
+            <span class="year-badge">${escapeHtml(p.label)}</span>
+            <span class="year-num">${escapeHtml(formatNumber(p.value))}<span class="year-unit">${escapeHtml(p.unit)}${escapeHtml(noteText)}</span></span>
+          </div>`;
+        }).join('');
+        backBody = `<div class="year-list">${rowsHtml}</div>`;
+      }else if(item.breakdown && item.breakdown.length){
+        backTitle = item.breakdownTitle || '分項加總 · 大到小';
+        backSubtitle = '依累計總數由大到小排序';
+        const rowsHtml = item.breakdown.map(p => {
+          const isZero = p.total === 0;
+          const text = isZero ? (p.note || '無統計') : '';
+          const zeroNote = text ? `<span class="year-inline-note">${escapeHtml(text)}</span>` : '';
+          return `
+          <div class="year-line">
+            <span class="year-badge">${escapeHtml(p.label)}</span>
+            <span class="year-num">${escapeHtml(formatNumber(p.total))}<span class="year-unit">${escapeHtml(p.unit)}</span>${zeroNote}</span>
+          </div>`;
+        }).join('');
+        backBody = `<div class="year-list">${rowsHtml}</div>`;
+      }else if(item.hasYearData){
+        backTitle = '各年度資料';
+        backSubtitle = '';
+        const rowsHtml = item.yearEntries.map(y => {
+          if(item.isApprovalSplit){
+            const { first: approved } = splitBySemicolon(y.note);
+            const composed = `受理面積${y.value || '—'}${y.unit}` + (approved ? `/${approved}` : '');
+            return `
+          <div class="year-line">
+            <span class="year-badge">${escapeHtml(y.yearLabel)}年</span>
+            <span class="year-num">${escapeHtml(composed)}</span>
+          </div>`;
+          }
+          return `
+          <div class="year-line">
+            <span class="year-badge">${escapeHtml(y.yearLabel)}年</span>
+            <span class="year-num">${escapeHtml(y.value || '—')}<span class="year-unit">${escapeHtml(y.unit)}</span></span>
+          </div>`;
+        }).join('');
+        let noteHtml = '';
+        if(item.isApprovalSplit){
+          const restEntries = item.yearEntries
+            .map(y => ({ y, rest: splitBySemicolon(y.note).rest }))
+            .filter(r => r.rest);
+          if(restEntries.length){
+            const notesHtml = restEntries
+              .map(r => `<div>${escapeHtml(r.y.yearLabel)}年：${linkify(r.rest, r.y.url)}</div>`)
+              .join('');
+            noteHtml = `<div class="back-note">${notesHtml}</div>`;
+          }
+        }else{
+          const noted = item.yearEntries.find(y => y.note || y.url);
+          noteHtml = noted ? `<div class="back-note">${linkify(noted.note, noted.url)}</div>` : '';
+        }
+        backBody = `<div class="year-list">${rowsHtml}</div>${noteHtml}`;
+      }else{
+        backTitle = 'Field Note';
+        backSubtitle = '';
+        backBody = `<div class="no-year-note">${linkify(item.fallbackNote.note, item.fallbackNote.url)}</div>`;
+      }
+
+      const backSubtitleHtml = backSubtitle ? `<div class="back-subtitle">${escapeHtml(backSubtitle)}</div>` : '';
+      const frontSumSubtitleHtml = item.frontSumSubtitle ? `<div class="card-sub-subtitle">${escapeHtml(item.frontSumSubtitle)}</div>` : '';
+
+      return `
+    <div class="card${isNew ? ' updated' : ''}" tabindex="0">
+      <div class="card-inner">
+        <div class="face face-front" style="--accent:${accent}">
+          <div>
+            <div class="card-top">
+              <div class="card-label">${escapeHtml(item.name)}</div>
+              ${yearBadge}
+            </div>
+            <div class="card-number${item.isApprovalSplit ? ' card-number-compact' : ''}">${escapeHtml(latest.value || '—')}<span class="unit">${escapeHtml(latest.unit)}</span></div>
+            ${frontSumSubtitleHtml}
+          </div>
+          <div class="card-foot">
+            <span class="card-date">更新 ${escapeHtml(latest.date)}</span>
+            <span class="card-hint">點按翻面 ›</span>
+          </div>
+        </div>
+        <div class="face face-back" style="--accent:${accent}">
+          <div class="back-title">${backTitle}</div>
+          ${backSubtitleHtml}
+          <div class="back-body">${backBody}</div>
+          <div class="back-row"><span>更新日期</span><span>${escapeHtml(latest.date)}</span></div>
+        </div>
+      </div>
+    </div>`;
+    }).join('');
+
+    section.innerHTML = `
+    <div class="section-body">
+      <div class="section-tag" style="--tag-color:${accent}">
+        <span>${escapeHtml(group.division)}</span>
+        <span class="count">${group.items.length}</span>
+      </div>
+      <div class="section-cards">${cardsHtml}</div>
+    </div>`;
+
+    sectionsEl.appendChild(section);
+    section.style.animationDelay = `${0.05 + gi * 0.06}s`;
+    requestAnimationFrame(() => section.classList.add('show'));
+
+    section.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => card.classList.toggle('flipped'));
+      card.addEventListener('keydown', e => {
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); card.classList.toggle('flipped'); }
+      });
+    });
+  });
+
+  if(!footerEl.classList.contains('show')) footerEl.classList.add('show');
+}
+
+function showSkeleton(){
+  statePanel.style.display = 'block';
+  stateBox.innerHTML = `<div class="spinner"></div>正在從 Google 試算表載入最新資料…`;
+  sectionsEl.style.display = 'none';
+}
+
+function buildDiagnosticText(){
+  const lines = [];
+  lines.push('【林業保育署重大業務成果 · 診斷資訊】');
+  lines.push('時間：' + new Date().toLocaleString('zh-TW', { hour12:false }));
+  lines.push('試算表 ID：' + SHEET_ID);
+  lines.push('分頁 GID：' + SHEET_GID);
+  lines.push('瀏覽器 UA：' + navigator.userAgent);
+  lines.push('嘗試紀錄：');
+  lastAttemptLog.forEach((a, i) => {
+    lines.push(`  ${i+1}. ${a.method} → ${a.ok ? '成功' : '失敗：' + a.error}`);
+    lines.push(`     URL: ${a.url}`);
+  });
+  return lines.join('\n');
+}
+
+function renderDiagnosticPanel(){
+  if(!lastAttemptLog.length){
+    diagBox.style.display = 'none';
+    return;
+  }
+  const url = gvizJsonUrl(null);
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
+  const rowsHtml = lastAttemptLog.map(a => `
+    <div class="diag-row">
+      <span class="${a.ok ? 'diag-ok' : 'diag-fail'}">${a.ok ? '✓' : '✗'} ${escapeHtml(a.method)}</span><br>
+      <span class="diag-label">結果：</span>${a.ok ? '成功' : escapeHtml(a.error)}
+    </div>`).join('');
+
+  diagBox.innerHTML = `
+    <h4>診斷資訊</h4>
+    ${rowsHtml}
+    <div class="diag-row"><span class="diag-label">請求網址：</span><br>${escapeHtml(url)}</div>
+    <div class="diag-actions">
+      <a href="${escapeHtml(url)}" target="_blank" rel="noopener">在新分頁開啟診斷連結</a>
+      <a href="${escapeHtml(csvUrl)}" target="_blank" rel="noopener">測試 CSV 匯出連結</a>
+      <button id="copyDiagBtn">複製診斷資訊</button>
+    </div>
+    <ul class="diag-checklist">
+      <li>點「在新分頁開啟診斷連結」：若看到一段以 <code>google.visualization.Query.setResponse(...)</code> 開頭的文字，代表權限與網址正確，問題出在瀏覽器攔截（見下一項）；若看到 Google 登入畫面或錯誤頁，代表分享權限尚未真正生效。</li>
+      <li>若使用公司／機關網路，請確認防火牆或代理伺服器未封鎖 docs.google.com。</li>
+      <li>暫時停用瀏覽器的廣告攔截 / 隱私權擴充功能後再試一次。</li>
+      <li>改用無痕視窗，或換一台裝置 / 網路環境測試，排除本機快取或延伸套件影響。</li>
+      <li>若「診斷連結」本身也打不開，請確認試算表分享設定確實是「知道連結的人」而非「限制」，且此分頁（GID）未被刪除或搬移。</li>
+    </ul>`;
+  diagBox.style.display = 'block';
+
+  const copyBtn = document.getElementById('copyDiagBtn');
+  if(copyBtn){
+    copyBtn.addEventListener('click', async () => {
+      try{
+        await navigator.clipboard.writeText(buildDiagnosticText());
+        copyBtn.textContent = '已複製 ✓';
+        setTimeout(() => { copyBtn.textContent = '複製診斷資訊'; }, 2000);
+      }catch(e){
+        copyBtn.textContent = '複製失敗，請手動選取';
+      }
+    });
+  }
+}
+
+function showError(message, canRetry){
+  statePanel.style.display = 'block';
+  sectionsEl.style.display = sectionsEl.children.length ? '' : 'none';
+  stateBox.innerHTML = `⚠ ${escapeHtml(message)}` + (canRetry ? `<br><button class="retry-btn" id="retryBtn">重新嘗試</button>` : '');
+  const retryBtn = document.getElementById('retryBtn');
+  if(retryBtn) retryBtn.addEventListener('click', () => fetchSheetData(true));
+  renderDiagnosticPanel();
+}
+
+function clearState(){
+  statePanel.style.display = 'none';
+  sectionsEl.style.display = '';
+  diagBox.style.display = 'none';
+}
+
+function setStatus(mode, text){
+  statusDot.className = 'dot' + (mode === 'error' ? ' err' : mode === 'loading' ? ' loading' : '');
+  statusText.innerHTML = text;
+}
+
+function nowLabel(){
+  const d = new Date();
+  return d.toLocaleTimeString('zh-TW', { hour12:false });
+}
+
+function gvizJsonUrl(withCallback){
+  const base = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${SHEET_GID}&headers=1&_=${Date.now()}`;
+  return withCallback ? `${base}&tqx=out:json;responseHandler:${withCallback}` : `${base}&tqx=out:json`;
+}
+
+/* 從 gviz 回應文字（google.visualization.Query.setResponse({...})）取出純 JSON */
+function parseGvizWrapper(text){
+  const start = text.indexOf('{');
+  const end = text.lastIndexOf('}');
+  if(start === -1 || end === -1 || start > end){
+    throw new Error('回應內容不是預期的試算表格式（可能是登入頁、權限錯誤頁，或連線被攔截）。');
+  }
+  try{
+    return JSON.parse(text.slice(start, end + 1));
+  }catch(e){
+    throw new Error('無法解析試算表回應內容（JSON 格式錯誤）。');
+  }
+}
+
+function checkGvizStatus(response){
+  if(response && response.status === 'error'){
+    const msg = (response.errors && response.errors[0] && response.errors[0].detailed_message) || '試算表回傳錯誤（可能是分享權限或分頁 GID 不正確）。';
+    throw new Error(msg);
+  }
+  return response;
+}
+
+/* 方式一：直接以 fetch() 讀取（多數情況下最快，且能取得明確的 HTTP 狀態） */
+async function loadViaFetch(){
+  const url = gvizJsonUrl(null);
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error('連線逾時（fetch）。')), FETCH_TIMEOUT_MS);
+  });
+  try{
+    const res = await Promise.race([
+      fetch(url, { credentials: 'omit', mode: 'cors', cache: 'no-store' }),
+      timeoutPromise
+    ]);
+    if(!res.ok){
+      throw new Error(`HTTP ${res.status}：試算表未回應正常內容，請確認分享權限與網址是否正確。`);
+    }
+    const text = await res.text();
+    return checkGvizStatus(parseGvizWrapper(text));
+  }catch(e){
+    throw e;
+  }
+}
+
+/* 方式二：以 <script> 標籤載入 JSONP，繞過部分瀏覽器的跨網域 fetch 限制 */
+function loadViaJsonp(){
+  return new Promise((resolve, reject) => {
+    const cbName = '__gvizCb_' + Date.now() + '_' + Math.floor(Math.random()*1e6);
+    let settled = false;
+
+    const timer = setTimeout(() => {
+      if(settled) return;
+      settled = true;
+      cleanup();
+      reject(new Error('連線逾時（script 標籤未於時限內回應）。'));
+    }, FETCH_TIMEOUT_MS);
+
+    function cleanup(){
+      clearTimeout(timer);
+      delete window[cbName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[cbName] = function(response){
+      if(settled) return;
+      settled = true;
+      cleanup();
+      try{
+        resolve(checkGvizStatus(response));
+      }catch(e){
+        reject(e);
+      }
+    };
+
+    const url = gvizJsonUrl(cbName);
+    const script = document.createElement('script');
+    script.src = url;
+    script.onerror = () => {
+      if(settled) return;
+      settled = true;
+      cleanup();
+      reject(new Error('script 載入失敗（網路封鎖、擴充功能攔截，或網址無法連線）。'));
+    };
+    document.body.appendChild(script);
+  });
+}
+
+/* 依序嘗試兩種讀取策略，並記錄每一步的結果供診斷面板顯示 */
+async function loadSheetWithDiagnostics(){
+  lastAttemptLog = [];
+  const urlNoCb = gvizJsonUrl(null);
+
+  try{
+    const response = await loadViaFetch();
+    lastAttemptLog.push({ method: '方式一 · 直接連線 (fetch)', url: urlNoCb, ok: true });
+    return response;
+  }catch(e1){
+    lastAttemptLog.push({ method: '方式一 · 直接連線 (fetch)', url: urlNoCb, ok: false, error: e1.message });
+  }
+
+  try{
+    const response = await loadViaJsonp();
+    lastAttemptLog.push({ method: '方式二 · script 標籤 (JSONP)', url: '同上（另加 responseHandler 參數）', ok: true });
+    return response;
+  }catch(e2){
+    lastAttemptLog.push({ method: '方式二 · script 標籤 (JSONP)', url: '同上（另加 responseHandler 參數）', ok: false, error: e2.message });
+  }
+
+  const combined = lastAttemptLog.map(a => `${a.method}：${a.ok ? '成功' : '失敗 — ' + a.error}`).join('｜');
+  const err = new Error('兩種讀取方式皆失敗。' + combined);
+  err.isDualFailure = true;
+  throw err;
+}
+
+async function fetchSheetData(isManual){
+  if(isFetching) return;
+  isFetching = true;
+  refreshBtn.disabled = true;
+  refreshBtn.classList.add('spinning');
+
+  const firstLoad = sectionsEl.children.length === 0;
+  if(firstLoad) showSkeleton();
+  setStatus('loading', isManual ? '正在重新同步…' : '正在同步中…');
+
+  try{
+    const response = await loadSheetWithDiagnostics();
+    const items = parseGvizResponse(response);
+    if(!items.length) throw new Error('試算表目前沒有可顯示的資料列。');
+
+    const itemSignature = i => `${i.name}|${i.division}|${i.latest.yearLabel}|${i.latest.value}|${i.latest.unit}|${i.latest.date}|${i.yearEntries.length}`;
+    const newKey = items.map(itemSignature).sort().join('~~');
+    const changedKeys = new Set();
+    if(currentItemsKey && newKey !== currentItemsKey){
+      // 找出實際有變化的項目，用來做卡片提示動畫
+      const prevSet = new Set(currentItemsKey.split('~~'));
+      items.forEach(i => {
+        if(!prevSet.has(itemSignature(i))) changedKeys.add(i.name + '||' + i.division);
+      });
+    }
+    currentItemsKey = newKey;
+
+    clearState();
+    renderSections(items, { changedKeys });
+    setStatus('live', `即時連線中 · 最後同步 <b>${nowLabel()}</b> <span class="muted">(共 ${items.length} 筆)</span>`);
+  }catch(err){
+    console.error(err);
+    setStatus('error', `同步失敗 <span class="muted">· 最後嘗試 ${nowLabel()}</span>`);
+    showError(err.isDualFailure ? '無法從試算表取得資料（兩種連線方式皆失敗，詳見下方診斷資訊）。' : (err.message || '資料載入失敗，請稍後再試。'), true);
+  }finally{
+    isFetching = false;
+    refreshBtn.disabled = false;
+    refreshBtn.classList.remove('spinning');
+  }
+}
+
+function scheduleAutoRefresh(){
+  if(autoTimer) clearInterval(autoTimer);
+  if(autoToggle.checked){
+    autoTimer = setInterval(() => fetchSheetData(false), AUTO_REFRESH_MS);
+  }
+}
+
+refreshBtn.addEventListener('click', () => fetchSheetData(true));
+autoToggle.addEventListener('change', scheduleAutoRefresh);
+
+fetchSheetData(false);
+scheduleAutoRefresh();
+</script>
+
+</body>
+</html>
